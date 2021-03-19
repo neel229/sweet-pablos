@@ -3,7 +3,8 @@ package user
 import (
 	"encoding/json"
 	"log"
-	"os/user"
+
+	user "github.com/neel229/sweet-pablos/pkg/user/service"
 )
 
 type Serializer struct {
