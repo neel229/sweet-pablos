@@ -13,9 +13,6 @@ migrateup:
 migratedown:
 	 migrate -path pkg/user/db/migration -database "postgresql://root:postgres@localhost:5432/sweet-pablo?sslmode=disable" -verbose down
 
-sqlc:
-	sqlc generate
-
 test:
 	go test -race -cover ./...
 
