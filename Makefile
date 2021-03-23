@@ -7,13 +7,16 @@ createdb:
 dropdb:
 	docker exec -it postgres13 dropdb sweet-pablo
 
+sqlc_user:
+	cd ./internal/user && sqlc generate
+
 migrateup:
-	 migrate -path pkg/user/db/migration -database "postgresql://root:postgres@localhost:5432/sweet-pablo?sslmode=disable" -verbose up
+	 migrate -path internal/user/db/migration -database "postgresql://root:postgres@localhost:5432/sweet-pablo?sslmode=disable" -verbose up
 
 migratedown:
-	 migrate -path pkg/user/db/migration -database "postgresql://root:postgres@localhost:5432/sweet-pablo?sslmode=disable" -verbose down
+	 migrate -path internal/user/db/migration -database "postgresql://root:postgres@localhost:5432/sweet-pablo?sslmode=disable" -verbose down
 
 test:
 	go test -race -cover ./...
 
-.PHONY: postgres createdb dropdb migrateup migratedown sqlc test
+.PHONY: postgres createdb dropdb sqlc_user migrateup migratedown test
