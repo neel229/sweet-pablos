@@ -11,10 +11,10 @@ sqlc_user:
 	cd ./internal/user && sqlc generate
 
 migrateup:
-	 migrate -path internal/user/db/migration -database "postgresql://root:postgres@localhost:5432/sweet-pablo?sslmode=disable" -verbose up
+	 migrate -path internal/user/db/migration -database "postgresql://root:postgres@localhost:5432/sweet_pablo?sslmode=disable" -verbose up
 
 migratedown:
-	 migrate -path internal/user/db/migration -database "postgresql://root:postgres@localhost:5432/sweet-pablo?sslmode=disable" -verbose down
+	 migrate -path internal/user/db/migration -database "postgresql://root:postgres@localhost:5432/sweet_pablo?sslmode=disable" -verbose down
 
 test:
 	go test -race -cover ./...
