@@ -2,10 +2,10 @@ postgres:
 	docker run --name postgres13 -p 5432:5432 -e POSTGRES_USER=root -e POSTGRES_PASSWORD=postgres -d postgres:13-alpine
 
 createdb:
-	docker exec -it postgres13 createdb --username=root --owner=root sweet-pablo
+	docker exec -it postgres13 createdb --username=root --owner=root sweet_pablo
 
 dropdb:
-	docker exec -it postgres13 dropdb sweet-pablo
+	docker exec -it postgres13 dropdb sweet_pablo
 
 sqlc_user:
 	cd ./internal/user && sqlc generate

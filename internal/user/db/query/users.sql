@@ -13,7 +13,7 @@ SELECT * FROM uaccount
 WHERE email = $1
 LIMIT 1;
 
---name: ListUsers :many
+-- name: ListUsers :many
 SELECT * FROM uaccount
 LIMIT $1
 OFFSET $2;

@@ -5,7 +5,6 @@ package db
 
 import (
 	"context"
-	"database/sql"
 )
 
 const createUser = `-- name: CreateUser :one
@@ -15,10 +14,10 @@ RETURNING id, first_name, last_name, email, password, ts
 `
 
 type CreateUserParams struct {
-	FirstName string         `json:"first_name"`
-	LastName  sql.NullString `json:"last_name"`
-	Email     string         `json:"email"`
-	Password  string         `json:"password"`
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
+	Email     string `json:"email"`
+	Password  string `json:"password"`
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (Uaccount, error) {
@@ -90,6 +89,47 @@ func (q *Queries) GetUserByEmail(ctx context.Context, email string) (Uaccount, e
 	return i, err
 }
 
+const listUsers = `-- name: ListUsers :many
+SELECT id, first_name, last_name, email, password, ts FROM uaccount
+LIMIT $1
+OFFSET $2
+`
+
+type ListUsersParams struct {
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
+}
+
+func (q *Queries) ListUsers(ctx context.Context, arg ListUsersParams) ([]Uaccount, error) {
+	rows, err := q.db.QueryContext(ctx, listUsers, arg.Limit, arg.Offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []Uaccount{}
+	for rows.Next() {
+		var i Uaccount
+		if err := rows.Scan(
+			&i.ID,
+			&i.FirstName,
+			&i.LastName,
+			&i.Email,
+			&i.Password,
+			&i.Ts,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const updateEmail = `-- name: UpdateEmail :exec
 UPDATE uaccount
 SET email = $2
@@ -129,8 +169,8 @@ WHERE id = $1
 `
 
 type UpdateLastNameParams struct {
-	ID       int64          `json:"id"`
-	LastName sql.NullString `json:"last_name"`
+	ID       int64  `json:"id"`
+	LastName string `json:"last_name"`
 }
 
 func (q *Queries) UpdateLastName(ctx context.Context, arg UpdateLastNameParams) error {
