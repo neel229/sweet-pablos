@@ -12,6 +12,7 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/go-playground/validator"
 	db "github.com/neel229/sweet-pablos/internal/user/db/sqlc"
+	"github.com/neel229/sweet-pablos/util"
 )
 
 type createUserParams struct {
@@ -26,15 +27,23 @@ func (s *Server) CreateUser() http.HandlerFunc {
 	return func(rw http.ResponseWriter, r *http.Request) {
 		data := new(createUserParams)
 		json.NewDecoder(r.Body).Decode(&data)
+
+		hashedPass, err := util.HashPassword(data.Password)
+		if err != nil {
+			log.Fatal(err)
+			http.Error(rw, "there was an internal server error. Please try again.", http.StatusInternalServerError)
+			return
+		}
+
 		arg := db.CreateUserParams{
 			FirstName: data.FirstName,
 			LastName:  data.LastName,
 			Email:     data.Email,
-			Password:  data.Password,
+			Password:  hashedPass,
 		}
 
 		v := validator.New()
-		err := v.Struct(arg)
+		err = v.Struct(arg)
 		if err != nil {
 			log.Fatal(err)
 			http.Error(rw, "invalid data provided", http.StatusBadRequest)
