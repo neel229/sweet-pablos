@@ -25,7 +25,7 @@ func NewServer(s *db.Store) *Server {
 
 // StartServer starts a new server at the given port
 func (s *Server) StartServer() {
-	config, err := util.LoadConfig("./config/test")
+	config, err := util.LoadConfig("./config/user")
 	if err != nil {
 		log.Fatalf("error loading config file: %v", err)
 	}

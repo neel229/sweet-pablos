@@ -12,9 +12,10 @@ import (
 )
 
 func main() {
-	config, err := util.LoadConfig("./config/test")
+	config, err := util.LoadConfig("./config/user")
 	if err != nil {
 		log.Fatalf("cannot read configurations: %v", err)
+		return
 	}
 
 	conn, err := sql.Open(config.DBDriver, config.DBSource)

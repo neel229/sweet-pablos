@@ -9,7 +9,7 @@ import (
 func (s *Server) SetRoutes() {
 	s.r.Use(middleware.Logger)
 	s.r.Route("/api/user", func(r chi.Router) {
-		//r.Get("/", s.ListAccounts)
+		r.Get("/", s.GetUserByEmail())
 		r.Post("/", s.CreateUser())
 		r.Route("/{id}", func(r chi.Router) {
 			r.Get("/", s.GetUser())

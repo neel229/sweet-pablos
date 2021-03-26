@@ -1,13 +1,19 @@
 package util
 
-import "github.com/spf13/viper"
+import (
+	"time"
+
+	"github.com/spf13/viper"
+)
 
 // Config contains the env settings used for program
 // configuration
 type Config struct {
-	DBDriver string `mapstructure:"DB_DRIVER"`
-	DBSource string `mapstructure:"DB_SOURCE"`
-	LisAddr  string `mapstructure:"LIS_ADDR"`
+	DBDriver            string        `mapstructure:"DB_DRIVER"`
+	DBSource            string        `mapstructure:"DB_SOURCE"`
+	LisAddr             string        `mapstructure:"LIS_ADDR"`
+	TokenSymKey         string        `mapstructure:"TOKEN_SYM_KEY"`
+	AccessTokenDuration time.Duration `mapstructure:"ACCESS_TOKEN_DUR"`
 }
 
 // LoadConfig reads a config file given the path
