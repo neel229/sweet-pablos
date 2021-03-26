@@ -83,6 +83,29 @@ type updateEmailReqParams struct {
 	Email string `json:"email" validate:"required,email"`
 }
 
+// GetUserByEmail endpoint retrieves a user based on the email provided
+func (s *Server) GetUserByEmail() http.HandlerFunc {
+	return func(rw http.ResponseWriter, r *http.Request) {
+		email := r.URL.Query().Get("email")
+		password := r.URL.Query().Get("password")
+		account, err := s.store.GetUserByEmail(context.Background(), email)
+		if err != nil {
+			log.Fatal(err)
+			if err == sql.ErrNoRows {
+				http.Error(rw, fmt.Sprintf("no account with email id: %s found", email), http.StatusBadRequest)
+				return
+			}
+			http.Error(rw, "we are facing some issues, please check back later.", http.StatusInternalServerError)
+			return
+		}
+		if account.Password != password {
+			http.Error(rw, "the password provided is invalid!", http.StatusBadRequest)
+			return
+		}
+		json.NewEncoder(rw).Encode(account.ID)
+	}
+}
+
 // UpdateEmail endpoint updates the email of the user
 // whose id is provided in the url
 func (s *Server) UpdateEmail() http.HandlerFunc {
@@ -123,15 +146,20 @@ func (s *Server) UpdatePassword() http.HandlerFunc {
 		data := new(updatePasswordReqParams)
 		json.NewDecoder(r.Body).Decode(&data)
 
+		hashedPass, err := util.HashPassword(data.Password)
+		if err != nil {
+			log.Fatal(err)
+			return
+		}
 		param, _ := strconv.Atoi(chi.URLParam(r, "id"))
 		id := int64(param)
 		arg := db.UpdatePasswordParams{
 			ID:       id,
-			Password: data.Password,
+			Password: hashedPass,
 		}
 
 		v := validator.New()
-		err := v.Struct(arg)
+		err = v.Struct(arg)
 		if err != nil {
 			log.Fatal(err)
 			http.Error(rw, "password's min. length has to be 8 ", http.StatusBadRequest)
