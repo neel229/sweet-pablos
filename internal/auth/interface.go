@@ -2,7 +2,8 @@ package auth
 
 import "time"
 
-// TokenInterface is an interface for managing tokens
+// TokenInterface is an interface for managing creation and
+// verification of tokens
 type TokenInterface interface {
 	// CreateToken creates a new token for a specific username and duration
 	CreateToken(userID int64, duration time.Duration) (string, error)
