@@ -16,7 +16,7 @@ type JWT struct {
 	secretKey string
 }
 
-// NewJWT creates a new JWT
+// NewJWT creates a new JWT interface
 func NewJWT(secretKey string) (TokenInterface, error) {
 	if len(secretKey) < minSecretKeySize {
 		return nil, fmt.Errorf("invalid key size: must be at least %d characters in size", minSecretKeySize)
