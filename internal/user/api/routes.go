@@ -20,4 +20,5 @@ func (s *Server) SetRoutes() {
 			r.Put("/password", s.UpdatePassword())
 		})
 	})
+	s.r.Get("/api/users", s.ListUsers())
 }

@@ -12,11 +12,11 @@ import (
 // Server contains a router and a db conn
 type Server struct {
 	r     *chi.Mux
-	store *db.Store
+	store *db.DBStore
 }
 
 // NewServer creates a new instance of the server
-func NewServer(s *db.Store) *Server {
+func NewServer(s *db.DBStore) *Server {
 	return &Server{
 		r:     chi.NewRouter(),
 		store: s,
