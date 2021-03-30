@@ -237,3 +237,26 @@ func (s *Server) DeleteUser() http.HandlerFunc {
 		}
 	}
 }
+
+type listUsersReqParams struct {
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
+}
+
+func (s *Server) ListUsers() http.HandlerFunc {
+	return func(rw http.ResponseWriter, r *http.Request) {
+		res := new(listUsersReqParams)
+		json.NewDecoder(r.Body).Decode(&res)
+		arg := db.ListUsersParams{
+			Limit:  res.Limit,
+			Offset: res.Offset,
+		}
+		accounts, err := s.store.ListUsers(context.Background(), arg)
+		if err != nil {
+			log.Fatal(err)
+			http.Error(rw, "error retreiving list of accounts. check back later!", http.StatusInternalServerError)
+			return
+		}
+		json.NewEncoder(rw).Encode(accounts)
+	}
+}

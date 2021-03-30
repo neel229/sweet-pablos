@@ -64,6 +64,6 @@ func TestInvalidTokenAlgo(t *testing.T) {
 
 	payload, err = tokenInterface.VerifyToken(token)
 	require.Error(t, err)
-	require.Equal(t, err, ErrInvalidToken.Error())
+	require.Equal(t, err.Error(), ErrInvalidToken.Error())
 	require.Nil(t, payload)
 }
